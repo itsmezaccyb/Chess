@@ -28,7 +28,7 @@ export default function App() {
 
   return (
     <>
-      <main>
+      <main className={open ? 'reviewing' : undefined}>
         <div hidden={!!open}>
           <Home onOpen={openGame} />
         </div>

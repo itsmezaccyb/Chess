@@ -205,19 +205,23 @@ export function Review({ game, viewer, onBack }: { game: GameSummary; viewer?: s
 
   const pvLine = posEval?.lines[0] ? pvToSan(posEval.fen, posEval.lines[0].pv) : [];
 
+  const navLinks = (
+    <>
+      <button className="link" onClick={onBack}>
+        <Icon name="back" size={16} /> Games
+      </button>
+      {game.url && (
+        <a className="link" href={game.url} target="_blank" rel="noreferrer">
+          View on {game.site === 'lichess' ? 'Lichess' : 'Chess.com'} <Icon name="external" size={14} />
+        </a>
+      )}
+    </>
+  );
+
   return (
     <div className="review">
       <div className="board-col">
-        <div className="review-top">
-          <button className="link" onClick={onBack}>
-            <Icon name="back" size={16} /> Games
-          </button>
-          {game.url && (
-            <a className="link" href={game.url} target="_blank" rel="noreferrer">
-              View on {game.site === 'lichess' ? 'Lichess' : 'Chess.com'} <Icon name="external" size={14} />
-            </a>
-          )}
-        </div>
+        <div className="review-top">{navLinks}</div>
         {player(top)}
         <div className="board-row">
           <EvalBar score={score} fen={fen} flipped={flipped} />
@@ -367,6 +371,9 @@ export function Review({ game, viewer, onBack }: { game: GameSummary; viewer?: s
           </div>
         </div>
       </div>
+
+      {/* On phones the links live here instead, clear of the status bar fade. */}
+      <div className="review-bottom">{navLinks}</div>
     </div>
   );
 }
