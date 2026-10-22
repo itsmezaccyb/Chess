@@ -764,7 +764,7 @@ main {
 
   /* Links move below the review; extra top room keeps the player strip out of the status bar fade. */
   main.reviewing {
-    padding-top: calc(44px + env(safe-area-inset-top));
+    padding-top: calc(36px + env(safe-area-inset-top));
   }
 
   .review-top {
