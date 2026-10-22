@@ -14,6 +14,7 @@ import {
 } from '../lib/analysis';
 import { useLiveAnalysis, useReview } from '../lib/useReview';
 import { Badge } from './Badge';
+import { Icon } from './Icon';
 import { EvalBar } from './EvalBar';
 import { EvalGraph } from './EvalGraph';
 
@@ -209,11 +210,11 @@ export function Review({ game, viewer, onBack }: { game: GameSummary; viewer?: s
       <div className="board-col">
         <div className="review-top">
           <button className="link" onClick={onBack}>
-            ← Games
+            <Icon name="back" size={16} /> Games
           </button>
           {game.url && (
             <a className="link" href={game.url} target="_blank" rel="noreferrer">
-              View on {game.site === 'lichess' ? 'Lichess' : 'Chess.com'} ↗
+              View on {game.site === 'lichess' ? 'Lichess' : 'Chess.com'} <Icon name="external" size={14} />
             </a>
           )}
         </div>
@@ -242,11 +243,11 @@ export function Review({ game, viewer, onBack }: { game: GameSummary; viewer?: s
         </div>
         {player(top === 'w' ? 'b' : 'w')}
         <div className="controls">
-          <button onClick={() => goTo(0)} aria-label="First move">⏮</button>
-          <button onClick={back} aria-label="Previous move">◀</button>
-          <button onClick={forward} aria-label="Next move" disabled={!!variation}>▶</button>
-          <button onClick={() => goTo(total)} aria-label="Last move">⏭</button>
-          <button onClick={() => setFlipped((f) => !f)} aria-label="Flip board">⇅</button>
+          <button onClick={() => goTo(0)} aria-label="First move"><Icon name="first" /></button>
+          <button onClick={back} aria-label="Previous move"><Icon name="prev" /></button>
+          <button onClick={forward} aria-label="Next move" disabled={!!variation}><Icon name="next" /></button>
+          <button onClick={() => goTo(total)} aria-label="Last move"><Icon name="last" /></button>
+          <button onClick={() => setFlipped((f) => !f)} aria-label="Flip board"><Icon name="flip" /></button>
         </div>
       </div>
 
@@ -274,7 +275,7 @@ export function Review({ game, viewer, onBack }: { game: GameSummary; viewer?: s
               <span>
                 <b>{current.san}</b> is {current.classification === 'excellent' || current.classification === 'inaccuracy' ? 'an' : 'a'}{' '}
                 {CLASS_INFO[current.classification].label.toLowerCase()}
-                {current.classification === 'best' ? ' move' : ''}
+                {['brilliant', 'great', 'best', 'excellent', 'good'].includes(current.classification) ? ' move' : ''}
                 {current.classification === 'miss' ? ' — the opponent’s error went unpunished' : ''}
               </span>
             </div>

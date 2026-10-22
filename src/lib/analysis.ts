@@ -14,17 +14,20 @@ export type Classification =
   | 'blunder'
   | 'forced';
 
-export const CLASS_INFO: Record<Classification, { label: string; symbol: string; color: string }> = {
+import type { IconName } from '../components/Icon';
+
+/** `symbol` is plain ASCII text; `icon` is used instead where set (no emoji glyphs). */
+export const CLASS_INFO: Record<Classification, { label: string; symbol: string; icon?: IconName; color: string }> = {
   brilliant: { label: 'Brilliant', symbol: '!!', color: '#1baca6' },
   great: { label: 'Great', symbol: '!', color: '#5c8bb0' },
-  best: { label: 'Best', symbol: '★', color: '#81b64c' },
-  excellent: { label: 'Excellent', symbol: '👍', color: '#81b64c' },
-  good: { label: 'Good', symbol: '✓', color: '#95b776' },
+  best: { label: 'Best', symbol: '', icon: 'star', color: '#81b64c' },
+  excellent: { label: 'Excellent', symbol: '', icon: 'thumb', color: '#81b64c' },
+  good: { label: 'Good', symbol: '', icon: 'check', color: '#95b776' },
   inaccuracy: { label: 'Inaccuracy', symbol: '?!', color: '#f7c631' },
   mistake: { label: 'Mistake', symbol: '?', color: '#ffa459' },
-  miss: { label: 'Miss', symbol: '✕', color: '#ee6b55' },
+  miss: { label: 'Miss', symbol: '', icon: 'cross', color: '#ee6b55' },
   blunder: { label: 'Blunder', symbol: '??', color: '#fa412d' },
-  forced: { label: 'Forced', symbol: '□', color: '#97afb3' },
+  forced: { label: 'Forced', symbol: '', icon: 'square', color: '#97afb3' },
 };
 
 export const CLASS_ORDER: Classification[] = [

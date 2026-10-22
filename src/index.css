@@ -171,7 +171,15 @@ main {
   font-size: 13px;
 }
 
+.icon {
+  display: block;
+  flex: none;
+}
+
 .link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: none;
   border: 0;
   padding: 0;
@@ -490,6 +498,8 @@ main {
 }
 
 .controls button {
+  display: grid;
+  place-items: center;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
