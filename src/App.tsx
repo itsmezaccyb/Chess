@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Home } from './components/Home';
-import { Icon } from './components/Icon';
 import { Review } from './components/Review';
 import type { GameSummary } from './lib/api';
 
@@ -29,13 +28,6 @@ export default function App() {
 
   return (
     <>
-      <header className="app-header">
-        <button className="brand" onClick={() => open && closeGame()}>
-          <span className="logo">
-            <Icon name="logo" size={18} />
-          </span> Free Chess Review
-        </button>
-      </header>
       <main>
         <div hidden={!!open}>
           <Home onOpen={openGame} />

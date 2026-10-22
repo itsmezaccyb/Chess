@@ -94,39 +94,11 @@ textarea {
 
 /* Layout shell */
 
-.app-header {
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-  padding: 0 16px;
-  padding-top: env(safe-area-inset-top);
-}
-
-.brand {
-  background: none;
-  border: 0;
-  padding: 12px 0;
-  font-weight: 700;
-  font-size: 17px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.logo {
-  display: inline-grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 19px;
-}
-
 main {
   max-width: 1040px;
   margin: 0 auto;
   padding: 16px;
+  padding-top: calc(16px + env(safe-area-inset-top));
 }
 
 .app-footer {
@@ -367,8 +339,8 @@ main {
   gap: 6px;
   min-width: 0;
   /* Keep board + strips + controls within one screen on desktop. */
-  max-width: clamp(320px, calc(100vh - 210px), 600px);
-  max-width: clamp(320px, calc(100dvh - 210px), 600px);
+  max-width: clamp(320px, calc(100vh - 160px), 600px);
+  max-width: clamp(320px, calc(100dvh - 160px), 600px);
   width: 100%;
   justify-self: center;
 }
@@ -521,37 +493,51 @@ main {
 .move-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
-.move-headline {
+.ellipsis {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.move-row-1 {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 28px;
+  height: 30px;
 }
 
-.move-headline .secondary {
+.move-row-1 .secondary {
   margin-left: auto;
+  flex: none;
+}
+
+.move-row-1 .progress-bar {
+  flex: 1;
+}
+
+.move-row-2 {
+  height: 20px;
+  line-height: 20px;
+  font-size: 14px;
 }
 
 .best-line {
   color: var(--muted);
-  font-size: 14px;
 }
 
 .best-line b {
   color: var(--accent);
 }
 
-.variation {
-  font-size: 14px;
-}
-
 .engine-line {
   display: flex;
+  height: 30px;
   gap: 8px;
-  align-items: baseline;
+  align-items: center;
   background: var(--surface-2);
   border-radius: 6px;
   padding: 6px 8px;
@@ -577,11 +563,6 @@ main {
   color: var(--muted);
   flex: none;
   font-size: 11px;
-}
-
-.progress-text {
-  font-size: 14px;
-  margin-bottom: 6px;
 }
 
 .progress-bar {

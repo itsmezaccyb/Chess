@@ -252,63 +252,63 @@ export function Review({ game, viewer, onBack }: { game: GameSummary; viewer?: s
       </div>
 
       <div className="side-col">
+        {/* Fixed three-row card so the layout never jumps while stepping through moves. */}
         <div className="card move-card">
-          {!done ? (
-            <div className="progress">
-              <div className="progress-text">
-                Analyzing… {Math.min(evals.length, total + 1)}/{total + 1} positions
-              </div>
-              <div className="progress-bar">
-                <div style={{ width: `${(evals.length / (total + 1)) * 100}%` }} />
-              </div>
-            </div>
-          ) : variation ? (
-            <div className="move-headline">
-              <span>Exploring a line</span>
-              <button className="secondary small" onClick={() => goTo(variation.base)}>
-                Back to game
-              </button>
-            </div>
-          ) : current ? (
-            <div className="move-headline">
-              <Badge c={current.classification} size={24} />
-              <span>
-                <b>{current.san}</b> is {current.classification === 'excellent' || current.classification === 'inaccuracy' ? 'an' : 'a'}{' '}
-                {CLASS_INFO[current.classification].label.toLowerCase()}
-                {['brilliant', 'great', 'best', 'excellent', 'good'].includes(current.classification) ? ' move' : ''}
-                {current.classification === 'miss' ? ' — the opponent’s error went unpunished' : ''}
-              </span>
-            </div>
-          ) : (
-            <div className="move-headline">
-              <span>Starting position{parsed.headers.Opening ? ` · ${parsed.headers.Opening}` : ''}</span>
-            </div>
-          )}
-          {current && current.bestSan && !GOOD_MOVES.has(current.classification) && current.bestUci !== current.uci && (
-            <div className="best-line">
-              Best was <b>{current.bestSan}</b>
-            </div>
-          )}
-          {variation && (
-            <div className="variation">
-              {variation.moves.map((m, i) => (
+          <div className="move-row-1">
+            {!done ? (
+              <>
+                <span className="ellipsis">
+                  Analyzing… {Math.min(evals.length, total + 1)}/{total + 1}
+                </span>
+                <div className="progress-bar">
+                  <div style={{ width: `${(evals.length / (total + 1)) * 100}%` }} />
+                </div>
+              </>
+            ) : variation ? (
+              <>
+                <span className="ellipsis">Exploring a line</span>
+                <button className="secondary small" onClick={() => goTo(variation.base)}>
+                  Back to game
+                </button>
+              </>
+            ) : current ? (
+              <>
+                <Badge c={current.classification} size={24} />
+                <span className="ellipsis">
+                  <b>{current.san}</b> is{' '}
+                  {current.classification === 'excellent' || current.classification === 'inaccuracy' ? 'an' : 'a'}{' '}
+                  {CLASS_INFO[current.classification].label.toLowerCase()}
+                  {['brilliant', 'great', 'best', 'excellent', 'good'].includes(current.classification) ? ' move' : ''}
+                </span>
+              </>
+            ) : (
+              <span className="ellipsis">Starting position</span>
+            )}
+          </div>
+          <div className="move-row-2 ellipsis">
+            {variation ? (
+              variation.moves.map((m, i) => (
                 <span key={i}>
                   {(m.color === 'w' || i === 0) && <span className="muted">{moveNumberPrefix(m.before)} </span>}
                   {m.san}{' '}
                 </span>
-              ))}
-            </div>
-          )}
-          {posEval && (
-            <div className="engine-line">
-              <span className="score">{score ? formatScore(score, posEval.fen) : ''}</span>
-              <span className="pv">
-                {pvLine.length > 0 && <span className="muted">{moveNumberPrefix(posEval.fen)} </span>}
-                {pvLine.join(' ')}
+              ))
+            ) : current && current.bestSan && !GOOD_MOVES.has(current.classification) && current.bestUci !== current.uci ? (
+              <span className="best-line">
+                Best was <b>{current.bestSan}</b>
               </span>
-              <span className="depth">d{posEval.lines[0]?.depth ?? 0}</span>
-            </div>
-          )}
+            ) : !current && parsed.headers.Opening ? (
+              <span className="muted">{parsed.headers.Opening}</span>
+            ) : null}
+          </div>
+          <div className="engine-line">
+            <span className="score">{posEval && score ? formatScore(score, posEval.fen) : ''}</span>
+            <span className="pv">
+              {pvLine.length > 0 && <span className="muted">{moveNumberPrefix(posEval!.fen)} </span>}
+              {pvLine.join(' ')}
+            </span>
+            <span className="depth">{posEval ? `d${posEval.lines[0]?.depth ?? 0}` : ''}</span>
+          </div>
         </div>
 
         <div className="card">
