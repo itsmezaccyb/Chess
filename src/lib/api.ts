@@ -152,3 +152,15 @@ export async function lichessGameById(id: string): Promise<GameSummary> {
   });
   return fromLichess(g);
 }
+
+/** The player's most recent standard games, newest first. */
+export async function recentGames(site: Site, username: string, count: number): Promise<GameSummary[]> {
+  if (site === 'lichess') return lichessGames(username, undefined, count);
+  const archives = await chessComArchives(username);
+  let found: GameSummary[] = [];
+  // Look back up to a year of monthly archives.
+  for (let i = 0; i < archives.length && i < 12 && found.length < count; i++) {
+    found = found.concat(await chessComMonth(archives[i]));
+  }
+  return found.slice(0, count);
+}

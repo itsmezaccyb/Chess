@@ -27,6 +27,37 @@ function writeCache(key: string, evals: PositionEval[]) {
   }
 }
 
+/** Evals from any earlier review of this game, preferring the deepest. */
+export function cachedEvals(cacheKey: string, plies: number): PositionEval[] | null {
+  for (const depth of [18, 15, 12]) {
+    const cached = readCache(`${cacheKey}:${depth}`);
+    if (cached && cached.length === plies + 1) return cached;
+  }
+  return null;
+}
+
+/** Analyses each position in turn. Resolves null if cancelled part way. */
+export async function analyzePositions(
+  engine: Engine,
+  fens: string[],
+  depth: number,
+  onProgress: (evals: PositionEval[]) => void,
+  isCancelled: () => boolean,
+): Promise<PositionEval[] | null> {
+  const out: PositionEval[] = [];
+  for (const fen of fens) {
+    const res = await engine.analyze(fen, { depth, multipv: 2 });
+    if (isCancelled()) return null;
+    out.push({
+      fen,
+      bestMove: res.bestMove,
+      lines: res.lines.map((l) => ({ ...l, score: toWhitePov(l.score, fen), pv: l.pv.slice(0, 10) })),
+    });
+    onProgress([...out]);
+  }
+  return out;
+}
+
 /** Runs Stockfish over every position of a game, reporting progress as it goes. */
 export function useReview(cacheKey: string, fens: string[], depth: number) {
   const [evals, setEvals] = useState<PositionEval[]>([]);
@@ -43,17 +74,8 @@ export function useReview(cacheKey: string, fens: string[], depth: number) {
     const engine = new Engine();
     engine.newGame();
     (async () => {
-      const out: PositionEval[] = [];
-      for (const fen of fens) {
-        const res = await engine.analyze(fen, { depth, multipv: 2 });
-        if (cancelled) return;
-        out.push({
-          fen,
-          bestMove: res.bestMove,
-          lines: res.lines.map((l) => ({ ...l, score: toWhitePov(l.score, fen), pv: l.pv.slice(0, 10) })),
-        });
-        setEvals([...out]);
-      }
+      const out = await analyzePositions(engine, fens, depth, (evals) => setEvals(evals), () => cancelled);
+      if (!out) return;
       writeCache(key, out);
       engine.terminate();
     })();

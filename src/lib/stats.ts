@@ -73,9 +73,15 @@ function parseClock(s: string): number {
 }
 
 /** Clock after each move from `[%clk h:mm:ss]` comments, or null if the PGN doesn't have one per move. */
-function clocksFromPgn(pgn: string, plies: number): number[] | null {
+export function clocksFromPgn(pgn: string, plies: number): number[] | null {
   const clocks = [...pgn.matchAll(/\[%clk\s+([\d:.]+)\]/g)].map((m) => parseClock(m[1]));
   return clocks.length === plies && plies > 0 ? clocks : null;
+}
+
+/** Starting seconds and increment, or null for daily / correspondence or unknown. */
+export function parseTimeControl(timeControl: string | undefined): { base: number; inc: number } | null {
+  const tc = timeControl?.match(/^(\d+)(?:\+(\d+))?$/);
+  return tc ? { base: Number(tc[1]), inc: Number(tc[2] ?? 0) } : null;
 }
 
 function clockStats(
@@ -83,10 +89,9 @@ function clockStats(
   clocks: number[],
   timeControl: string | undefined,
 ): PerSide<ClockStats> | null {
-  const tc = timeControl?.match(/^(\d+)(?:\+(\d+))?$/);
-  if (!tc) return null; // daily / correspondence or unknown
-  const base = Number(tc[1]);
-  const inc = Number(tc[2] ?? 0);
+  const tc = parseTimeControl(timeControl);
+  if (!tc) return null;
+  const { base, inc } = tc;
 
   const result = {} as PerSide<ClockStats>;
   for (const side of ['w', 'b'] as Side[]) {

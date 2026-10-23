@@ -9,6 +9,7 @@ import {
   type Site,
 } from '../lib/api';
 import { parseGame } from '../lib/analysis';
+import { Icon } from './Icon';
 
 type Tab = Site | 'pgn';
 
@@ -46,7 +47,13 @@ function outcomeFor(game: GameSummary, username: string): 'win' | 'loss' | 'draw
   return (game.result === '1-0') === (color === 'w') ? 'win' : 'loss';
 }
 
-export function Home({ onOpen }: { onOpen: (game: GameSummary, viewer?: string) => void }) {
+export function Home({
+  onOpen,
+  onInsights,
+}: {
+  onOpen: (game: GameSummary, viewer?: string) => void;
+  onInsights: (site: Site, username: string) => void;
+}) {
   const saved = loadSaved();
   const [tab, setTab] = useState<Tab>(saved.tab);
   const [username, setUsername] = useState(saved.username);
@@ -222,6 +229,16 @@ export function Home({ onOpen }: { onOpen: (game: GameSummary, viewer?: string) 
 
       {tab !== 'pgn' && searched && !loading && !error && !games.length && (
         <p className="muted center">No recent standard games found for {searched}.</p>
+      )}
+
+      {games.length > 0 && tab !== 'pgn' && (
+        <button className="insights-cta" onClick={() => onInsights(tab, searched)}>
+          <span>
+            <b>Insights</b>
+            <span className="muted"> · tactics, phases, openings and time across your recent games</span>
+          </span>
+          <Icon name="next" size={14} />
+        </button>
       )}
 
       {games.length > 0 && (
