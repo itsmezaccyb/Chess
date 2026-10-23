@@ -1036,7 +1036,7 @@ main {
     max-height: 200px;
   }
 
-  /* Links move below the review; extra top room keeps the player strip out of the status bar fade. */
+  /* Review and Insights: extra top room keeps content out of the iOS status bar fade. */
   main.subpage {
     padding-top: calc(26px + env(safe-area-inset-top));
   }
