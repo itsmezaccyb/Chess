@@ -230,7 +230,7 @@ export function reviewGame(history: Move[], evals: PositionEval[]): GameReview {
 }
 
 /** Blend of arithmetic and harmonic mean, so a few blunders weigh heavily. */
-function gameAccuracy(values: number[]): number {
+export function gameAccuracy(values: number[]): number {
   if (!values.length) return 100;
   const mean = values.reduce((a, b) => a + b, 0) / values.length;
   const harmonic = values.length / values.reduce((a, b) => a + 1 / Math.max(b, 1), 0);

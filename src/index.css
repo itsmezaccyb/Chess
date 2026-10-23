@@ -714,6 +714,54 @@ main {
   font-variant-numeric: tabular-nums;
 }
 
+.summary-section {
+  margin-top: 8px;
+  padding: 8px 0 2px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-align: center;
+}
+
+.summary-row.stat .label {
+  justify-content: center;
+  padding-left: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.stat-val {
+  font-weight: 600;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+}
+
+.stat-move {
+  border: 0;
+  background: none;
+  padding: 2px 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.stat-label {
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+}
+
+.stat-detail {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
 .depth-card {
   display: flex;
   align-items: center;

@@ -12,6 +12,7 @@ import {
   type MoveReview,
   type PositionEval,
 } from '../lib/analysis';
+import { formatSeconds, gameStats, PHASES, type MoveRef } from '../lib/stats';
 import { useLiveAnalysis, useReview } from '../lib/useReview';
 import { Badge } from './Badge';
 import { Icon } from './Icon';
@@ -65,6 +66,10 @@ export function Review({ game, viewer, onBack }: { game: GameSummary; viewer?: s
   const [depth, setDepth] = useState(savedDepth);
   const { evals, done } = useReview(game.id, parsed.fens, depth);
   const review = useMemo(() => (done ? reviewGame(parsed.history, evals) : null), [done, evals, parsed.history]);
+  const stats = useMemo(
+    () => (review ? gameStats(parsed.history, review.moves, evals, game.pgn, parsed.headers) : null),
+    [review, parsed, evals, game.pgn],
+  );
 
   const viewerIsBlack = !!viewer && game.black.name.toLowerCase() === viewer.toLowerCase();
   const [flipped, setFlipped] = useState(viewerIsBlack);
@@ -346,6 +351,49 @@ export function Review({ game, viewer, onBack }: { game: GameSummary; viewer?: s
                 </span>
               </div>
             ))}
+            {stats && (
+              <>
+                <div className="summary-section">Engine</div>
+                <StatRow label="Avg centipawn loss" w={Math.round(stats.acpl.w)} b={Math.round(stats.acpl.b)} />
+                <StatRow label="Engine match" w={`${Math.round(stats.engineMatch.w)}%`} b={`${Math.round(stats.engineMatch.b)}%`} />
+                <StatRow
+                  label="Biggest mistake"
+                  w={<MoveLink move={stats.biggestMistake.w} onSelect={goTo} />}
+                  b={<MoveLink move={stats.biggestMistake.b} onSelect={goTo} />}
+                />
+
+                <div className="summary-section">Accuracy by phase</div>
+                {PHASES.map((p) => (
+                  <StatRow
+                    key={p}
+                    label={p[0].toUpperCase() + p.slice(1)}
+                    w={formatAcc(stats.phaseAccuracy.w[p])}
+                    b={formatAcc(stats.phaseAccuracy.b[p])}
+                  />
+                ))}
+
+                {stats.clock && (
+                  <>
+                    <div className="summary-section">Clock</div>
+                    <StatRow
+                      label="Avg time per move"
+                      w={formatSeconds(stats.clock.w.avgTime)}
+                      b={formatSeconds(stats.clock.b.avgTime)}
+                    />
+                    <StatRow
+                      label="Longest think"
+                      w={<MoveLink move={stats.clock.w.longestThink} onSelect={goTo} detail={formatSeconds(stats.clock.w.longestThink?.seconds ?? 0)} />}
+                      b={<MoveLink move={stats.clock.b.longestThink} onSelect={goTo} detail={formatSeconds(stats.clock.b.longestThink?.seconds ?? 0)} />}
+                    />
+                    <StatRow
+                      label="Accuracy under 30s"
+                      w={formatAcc(stats.clock.w.lowTimeAccuracy)}
+                      b={formatAcc(stats.clock.b.lowTimeAccuracy)}
+                    />
+                  </>
+                )}
+              </>
+            )}
           </div>
         )}
 
@@ -375,6 +423,30 @@ export function Review({ game, viewer, onBack }: { game: GameSummary; viewer?: s
       {/* On phones the links live here instead, clear of the status bar fade. */}
       <div className="review-bottom">{navLinks}</div>
     </div>
+  );
+}
+
+function formatAcc(a: number | null) {
+  return a === null ? '–' : a.toFixed(1);
+}
+
+function StatRow({ label, w, b }: { label: string; w: React.ReactNode; b: React.ReactNode }) {
+  return (
+    <div className="summary-row stat">
+      <span className="stat-val">{w}</span>
+      <span className="label">{label}</span>
+      <span className="stat-val">{b}</span>
+    </div>
+  );
+}
+
+function MoveLink({ move, onSelect, detail }: { move: MoveRef | null; onSelect: (ply: number) => void; detail?: string }) {
+  if (!move) return <span className="muted">–</span>;
+  return (
+    <button className="stat-move" onClick={() => onSelect(move.ply)}>
+      <span className="stat-label">{move.label}</span>
+      {detail && <span className="stat-detail">{detail}</span>}
+    </button>
   );
 }
 
