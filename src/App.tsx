@@ -31,7 +31,7 @@ export default function App() {
 
   return (
     <>
-      <main className={view?.kind === 'review' ? 'reviewing' : undefined}>
+      <main className={view ? 'subpage' : undefined}>
         <div hidden={!!view}>
           <Home
             onOpen={(game, viewer) => open({ kind: 'review', game, viewer })}

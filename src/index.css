@@ -1037,7 +1037,7 @@ main {
   }
 
   /* Links move below the review; extra top room keeps the player strip out of the status bar fade. */
-  main.reviewing {
+  main.subpage {
     padding-top: calc(26px + env(safe-area-inset-top));
   }
 
